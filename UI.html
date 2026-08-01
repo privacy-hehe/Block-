@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, intial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>Blocks</title>
+        <link herf="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap">
+        <style>
+            :root{
+                --bg: #f4f4f5;
+                --board-bg: #ffffff;
+                --cell-bg: #e4e4e7;
+                --blue: #7dd3fc;
+                --pink: #f4afc5;
+                --purple: #c4b5fd;
+                --green: #86efac;
+                --yellow: #fde047;
+                --text-main: #3f3f46;
+                --light-text: #a1a1aa;
+            }
+
+            *{
+                box-sizing: border-box;
+                touch-action: manipulation;
+            }
+
+            body{
+                margin: 0;
+                padding: 0;
+                background: var(--bg);
+                color: var(--text-main);
+                font-family:'Outfit', sans-serif;
+                display:flex;
+                flex-direction: column;
+                align-items: center;
+                min-height: 100vh;
+                overflow: hidden;
+                user-select: none;
+            }
+
+            header {width: 100%; max-width: 400px; display:flex; justify-content: space-between; padding: 20px; margin-top: 10px;}
+            .score-chunk {
+                display: flex;
+                flex-direction: column;
+            }
+            .score-label {
+                font-size: 0.75rem;
+                letter-spacing: 2px;
+                color: var(--light-text);
+                transition: transform 0.1s;
+            }
+            .score-val { font-size: 2rem; font-weight: 900; color: var(--text-main); transition: transform 0.1s;}
+            
+
+
+            #board-wrap {
+                background: var(--cell-bg);
+                padding: 10px;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.1);
+                position: relative;
+            }
+            #grid {
+                display: grid;
+                grid-template-columns: repeat(8, 1fr);
+                gap: 4px;
+                width: 90vw;
+                max-width: 360px;
+                height: 90vw;
+                max-height: 360px; 
+            }
+            .cell {background: var(--cell-bg); border-radius: 6px; transition: transform 0.3s;}
+
+
+            #dock {
+                display: flex;
+                justify-content: space-evenly;
+                align-items: center;
+                width: 100px;
+                max-width: 400px;
+                height: 120px;
+                margin-top: 20px;
+                padding: 0 10px;
+            }
+            .docked-shape {
+                position: relative;
+                cursor: grab;
+                transform: scale(0.6);
+                transition: transform 0.2s ease;
+            }
+            .docked-shape:active { color: grabbing;}
+
+
+            .block {
+                width: 40px;
+                height: 40px;
+                border-radius: 6px;
+                position: absolute;
+                box-shadow: insert 0 2px 0 rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.1);
+                pointer-events: none;
+            }
+            #dragger {position: fixed; pointer-events: none; z-index: 999; transform: scale(1); display: none;}
+
+
+            #death-screen {
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                background: rgba(225,225,225,0.85);
+                backdrop-filter: blur(4px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                border-radius: 12px;
+                opacity:0;
+                pointer-events: none;
+                transition: opacity 0.43s;
+                z-index: 100;
+            }
+            #death-screen.active { opacity: 1; pointer-events: auto;}
+            #death-text { font-size: 2.5rem; font-weight: 900; color: var(--text-main); margin-bottom: 20px;}
+            #restart-btn {
+                background: var(--purple);
+                color: #18181b;
+                border: none;
+                padding: 12px 30px;
+                font-family: 'Outfit';
+                font-size: 1.2rem;
+                font-weight: 700;
+                border-radius: 50px;
+                cursor: pointer;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                transition: transform 0.1s, background 0.2s;
+            }
+            #restart-btn:active { transform: scale(0.95); }
+
+            
+            .c1 { background: var(--blue);}
+            .c2 { background: var(--pink);}
+            .c3 { background: var(--purple);}
+            .c4 { background: var(--green);}
+            .c5 { background: var(--yellow);}
+            
+
+            @keyframes popOut { 0% { transform: scale(1); opacity: 1;} 50% { transform: scale(1.1); opacity: 0.8; } 100% { transform: scale(0); opacity: 0; } }
+            .popping { animation: popOut 0.3s forwards; }
+            .floating-text { position: absolute; color: var(--pink); font-weight: 900; font-size: 2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.1); pointer-events: none; animation: floatUp 1s forwards; z-index: 50; }
+            @keyframes floatUp { 0% { transform: translate(0) scale(1); opacity: 1; } 100% { transform: translateY(-50px) scale(1.2); opacity: 0; } }
+            
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="score-chunk">
+                <span class="score-label">Score</span>
+                <span class="score-val" id="current-pts">0</span>
+            </div>
+            <div class="score-chunk" style="align-items: flex-end;">
+                <span class="score-label">Best</span>
+                <span class="score-val" id="best-pts" style="color:var(--pink);">0</span>
+            </div>
+        </header>
+        <div id="board-wrap">
+            <div id="grid"></div>
+            <div id="dath-screen">
+                <div id="death-text">NO MOVES LEFT</div>
+                <button id="restart-btn">Restart</button>
+            </div>
+        </div>
+        <div id="dock"></div>
+        <div id="dragger"></div>
+
+
+
+        <script>
