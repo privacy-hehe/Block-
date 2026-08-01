@@ -1,0 +1,65 @@
+  <!-- Menu Overlay -->
+  <div id="start-screen" class="active">
+    <div class="logo-text">
+      <span>M</span><span>A</span><span>T</span><span>T</span><span>E</span><br>BLOCKS
+    </div>
+    <div class="high-score-display">Best Score: <span id="start-best-pts" style="color: var(--matte-pink);">0</span></div>
+    <button id="start-btn">PLAY</button>
+  </div>
+
+
+
+    #start-screen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s;
+    }
+    
+    #start-screen:not(.active) {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .logo-text {
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      margin-bottom: 5px;
+      text-align: center;
+      line-height: 1.1;
+    }
+    
+    .logo-text span:nth-child(1) { color: var(--matte-blue); }
+    .logo-text span:nth-child(2) { color: var(--matte-pink); }
+    .logo-text span:nth-child(3) { color: var(--matte-yellow); }
+    .logo-text span:nth-child(4) { color: var(--matte-green); }
+    .logo-text span:nth-child(5) { color: var(--matte-purple); }
+
+    .high-score-display {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      font-weight: 700;
+    }
+
+    #start-btn {
+      background: var(--text-main);
+      color: white;
+      border: none;
+      padding: 16px 48px;
+      font-family: 'Outfit';
+      font-size: 1.5rem;
+      font-weight: 900;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      transition: transform 0.1s;
+    }
+    #start-btn:active { transform: scale(0.95); }
