@@ -19,13 +19,4 @@ A straightforward, endless block puzzle game. Built entirely in a single HTML fi
 - It is damn simple.
 - You don't need this guide.
 
-
-## Modifying the game
-
-If you want to tweak the game, open the HTML file in any text editor:
-
-- **Colors:** The matte aesthetic is defined right at the top of the `<style>` block in the `:root` variables.
-- **Grid Size:** The board dimensions are controlled by the `ROWS = 8` and `COLS = 8` variables in the script. 
-- **Block Shapes:** New shapes can be added by editing the `rawShapes` array. They are built using simple 2D arrays (matrices) where `1` is a solid block and `0` is empty space.
-
-**You should not mess with code 😁😁😁.**
+## Hope you like it. 
